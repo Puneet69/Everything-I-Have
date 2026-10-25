@@ -48,7 +48,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from app.database import get_session
-from app.models import Topic, TopicIn
+from app.models import Topic, TopicIn , Project
 
 router = APIRouter(prefix="/topics", tags=["topics"])
 
@@ -73,6 +73,8 @@ def get_topic(title: str, session: Session = Depends(get_session)):
 def add_topic(data: TopicIn, session: Session = Depends(get_session)):
     if find_topic(session, data.title):
         raise HTTPException(status_code=400, detail="Topic already exists")
+    if data.project_id and not session.get(Project, data.project_id):
+        raise HTTPException(status_code=404, detail="Project not found")
     topic = Topic(**data.model_dump())
     session.add(topic)
     session.commit()
@@ -86,6 +88,7 @@ def update_topic(title: str, data: TopicIn, session: Session = Depends(get_sessi
         raise HTTPException(status_code=404, detail="Topic not found")
     topic.status = data.status
     topic.description = data.description
+    topic.project_id = data.project_id
     session.add(topic)
     session.commit()
     session.refresh(topic)
