@@ -1,6 +1,6 @@
-from sqlmodel import SQLModel , Session , create_engine
+from sqlmodel import SQLModel, Session, create_engine
 
-engine = create_engine("sqlite:///database.db" , connect_args={"check_same_thread": False})
+engine = create_engine("sqlite:///database.db", connect_args={"check_same_thread": False})
 
 def create_db():
     SQLModel.metadata.create_all(engine)

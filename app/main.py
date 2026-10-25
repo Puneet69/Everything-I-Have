@@ -68,7 +68,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.database import create_db
-from app.routers import topics, stats
+from app.routers import topics, stats , projects
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -78,6 +78,8 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 app.include_router(topics.router)
 app.include_router(stats.router)
+app.include_router(projects.router)
+
 
 @app.get("/")
 def home():
